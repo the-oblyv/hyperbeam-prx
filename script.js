@@ -1,36 +1,19 @@
-import { auth, onAuthStateChanged, Hyperbeam } from "./imports.js";
+import { Hyperbeam } from "./imports.js";
 
-const virtualComputerDiv = document.getElementById("browsers");
-let hb;
+const container = document.getElementById("browsers");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "/InfiniteLogins.html";
-    return;
-  }
-
-  const uid = user.uid;
-
+async function startVM() {
   try {
-    const adminPass = localStorage.getItem("a_pass");
-    let url;
-    let options = {};
+    const res = await fetch("/api/create-session");
+    const data = await res.json();
 
-    if (adminPass) {
-      url = `${a}/hyperadminvm?uid=${uid}`;
-      options.headers = { "x-admin-password": adminPass };
-    } else {
-      url = `${a}/hypervm?uid=${uid}`;
-    }
-
-    const resp = await fetch(url, options);
-    const data = await resp.json();
-
-    // Embed Hyperbeam VM directly in div
-    hb = await Hyperbeam(virtualComputerDiv, data.embed_url);
-
+    // Embed Hyperbeam directly into the div
+    await Hyperbeam(container, data.embed_url);
   } catch (err) {
-    console.error(err);
-    virtualComputerDiv.innerText = "Failed To Load VM";
+    console.error("Failed to start Hyperbeam VM:", err);
+    container.innerText = "Failed to load VM";
   }
-});
+}
+
+// Auto-start on page load
+startVM();
