@@ -3,11 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hyperbeam</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Hyperbeam Fullscreen</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
+    #browsers { width: 100vw; height: 100vh; }
+  </style>
 </head>
 <body>
   <div id="browsers"></div>
-  <script type="module" src="script.js"></script>
+  <script type="module">
+    import { Hyperbeam } from "./imports.js";
+
+    const container = document.getElementById("browsers");
+    console.log("Container:", container);
+
+    async function startVM() {
+      try {
+        const res = await fetch("/api/create-session");
+        const data = await res.json();
+        console.log("Embed URL:", data.embed_url);
+
+        if (!data.embed_url) {
+          container.innerText = "No embed_url returned";
+          return;
+        }
+
+        await Hyperbeam(container, data.embed_url);
+        console.log("VM embedded!");
+      } catch (err) {
+        console.error("Failed to start VM:", err);
+        container.innerText = "Failed to load VM";
+      }
+    }
+
+    startVM();
+  </script>
 </body>
 </html>
