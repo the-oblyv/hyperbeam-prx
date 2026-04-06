@@ -6,9 +6,10 @@ export default async function handler(req, res) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      timeout: 300000,
-      region: "US"
-    })
+  timeout: 300000,
+  region: "US",
+  start_url: "https://searx.tiekoetter.com/"
+})
   });
 
   const data = await response.json();
