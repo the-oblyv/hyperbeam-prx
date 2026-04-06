@@ -1,0 +1,14 @@
+const iframe = document.getElementById("hb-frame");
+
+async function startSession() {
+  try {
+    const res = await fetch("/api/create-session");
+    const data = await res.json();
+
+    iframe.src = data.embed_url;
+  } catch (err) {
+    console.error("Failed:", err);
+  }
+}
+
+startSession();
