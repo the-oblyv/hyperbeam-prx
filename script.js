@@ -7,7 +7,7 @@ async function startSession() {
 
     iframe.src = data.embed_url;
   } catch (err) {
-    console.error("Failed:", err);
+    console.error("Failed to start Hyperbeam session:", err);
   }
 }
 
