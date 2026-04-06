@@ -7,8 +7,8 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        type: "standard_vm", // Required
-        region: "US"          // Required
+        type: "standard_vm" // required
+        // Do NOT set region unless you know your account supports it
       })
     });
 
