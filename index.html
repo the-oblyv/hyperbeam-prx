@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hyperbeam Fullscreen</title>
-  <style>
-    html, body { margin: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
-    #browsers { width: 100vw; height: 100vh; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperbeam Fullscreen</title>
+<style>
+html, body { margin:0; width:100%; height:100%; overflow:hidden; background:black; }
+#browsers { width:100vw; height:100vh; }
+</style>
 </head>
 <body>
-  <div id="browsers"></div>
-  <script type="module">
-    import { Hyperbeam } from "./imports.js";
+<div id="browsers"></div>
+<script type="module">
+import { Hyperbeam } from "./imports.js";
 
-    const container = document.getElementById("browsers");
-    console.log("Container:", container);
+const container = document.getElementById("browsers");
 
-    async function startVM() {
-      try {
-        const res = await fetch("/api/create-session");
-        const data = await res.json();
-        console.log("Embed URL:", data.embed_url);
+async function startVM() {
+  try {
+    const res = await fetch("/api/create-session");
+    const data = await res.json();
 
-        if (!data.embed_url) {
-          container.innerText = "No embed_url returned";
-          return;
-        }
+    console.log("API response:", data);
 
-        await Hyperbeam(container, data.embed_url);
-        console.log("VM embedded!");
-      } catch (err) {
-        console.error("Failed to start VM:", err);
-        container.innerText = "Failed to load VM";
-      }
+    if (!data.embed_url) {
+      container.innerText = "No embed_url returned from API";
+      return;
     }
 
-    startVM();
-  </script>
+    // Hyperbeam options object now supports admin_token
+    const options = {};
+    if (data.admin_token) options.adminToken = data.admin_token;
+
+    // Start the VM
+    await Hyperbeam(container, data.embed_url, options);
+    console.log("VM started successfully!");
+  } catch (err) {
+    console.error("Failed to start VM:", err);
+    container.innerText = "Failed to load VM";
+  }
+}
+
+startVM();
+</script>
 </body>
 </html>
