@@ -7,19 +7,22 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        timeout: 300000,   // 5 minutes
-        region: "US"       // required, "US" or "EU"
+        type: "standard_vm", // Required
+        region: "US"          // Required
       })
     });
 
     if (!response.ok) {
       const text = await response.text();
+      console.error("Hyperbeam API error:", text);
       return res.status(response.status).json({ error: text });
     }
 
     const data = await response.json();
     res.status(200).json(data);
+
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 }
