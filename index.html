@@ -11,13 +11,15 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:blac
 </head>
 <body>
 <div id="browsers"></div>
+
 <script type="module">
-import { Hyperbeam } from "./imports.js";
+import { Hyperbeam } from "https://cdn.hyperbeam.com/hyperbeam.min.js";
 
 const container = document.getElementById("browsers");
 
 async function startVM() {
   try {
+    // Fetch the session from your API
     const res = await fetch("/api/create-session");
     const data = await res.json();
 
@@ -28,13 +30,18 @@ async function startVM() {
       return;
     }
 
-    // Hyperbeam options object now supports admin_token
-    const options = {};
-    if (data.admin_token) options.adminToken = data.admin_token;
+    // Hyperbeam now requires the embed object
+    const embedOptions = {
+      container,
+      sessionId: data.session_id,
+      token: data.admin_token || undefined, // admin token if present
+      startFullscreen: true, // fullscreen the VM
+    };
 
-    // Start the VM
-    await Hyperbeam(container, data.embed_url, options);
+    // Initialize Hyperbeam
+    await Hyperbeam(embedOptions);
     console.log("VM started successfully!");
+
   } catch (err) {
     console.error("Failed to start VM:", err);
     container.innerText = "Failed to load VM";
