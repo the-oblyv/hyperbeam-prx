@@ -7,10 +7,8 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        timeout: 300000,            // 5 minutes
-        region: "US",
-        start_url: "https://google.com",
-        vm: "standard"
+        timeout: 300000,   // 5 minutes
+        region: "US"       // required, "US" or "EU"
       })
     });
 
